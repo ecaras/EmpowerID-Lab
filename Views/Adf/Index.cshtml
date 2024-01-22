@@ -1,0 +1,188 @@
+﻿@using Empower.Products.ETL.Models;
+@model Empower.Products.ETL.ModelView.AdfModelView
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.7.1/jquery.min.js"></script>
+
+@{
+    ViewBag.Title = "";
+}
+
+<div>
+    <div>
+        <h5>Data Factory ETL Management</h5>
+        <br />
+        <span>This ETL is connected to Data Factory and SQL server database. </span>
+        <br />
+        <span>You can manage to run the ETL by selecting the pipeline you would like to run</span>
+        <br />
+        <span>The dropdown list will query all available pipelines in the data factory.</span>
+        <br />
+        <span>You can refresh the pipeline logs so that you can immediately see the pipelines status.</span>
+        <br /><br />
+        <div>
+            <p style="font-weight:500">
+                <span>Select which pipeline you like to run.</span>
+            </p>  
+            
+            <div class="form-inline">
+                <div class="form-group mb-2">
+                    <select id="ddlPipeline" class="form-control" style="display: inline-block; width: 270px;">
+                        @foreach (string item in Model.Pipelines)
+                        {
+                            <option value="@item">@item</option>
+                        }
+                    </select>
+                    <i class="fa fa-chevron-down" style="font-size:18px; margin-left: -30px; " aria-hidden="true"></i>
+                    <div id="submitBtnContainer" class="form-group mb-2" style="display: inline-block; width: 120px; margin-left: 25px;">
+                        <button type="button" id="submitBtn" class="btn-secondary form-control btn">Submit</button>                        
+                    </div>
+                    
+                    <span id="runID" style="padding-left: 25px;">Running pipeline with run id </span>
+                    
+                    <div id="submitBtnloaderGif" style="margin: 0px; display: inline; margin-left: 15px;">
+                        <img class="animated-gif2" src="~/resources/loader-iframe.gif">
+                    </div>
+
+                </div>                
+            </div>                        
+        </div>
+       
+
+    </div>    
+    <div style="display: block; min-height: 50px;">
+
+    </div>
+
+    <div>
+        <h5 style="display: inline">
+            Factory Pipeline Monitoring
+           
+            <a href="#" style="text-decoration: none">
+                <i id="refreshBtn" class="fa fa-refresh" style="font-size:24px; margin-left: 10px;" aria-hidden="true"></i>
+            </a>
+        </h5>
+        <div id="loaderGif" style="margin: 0px; display: inline">
+            <img class="animated-gif2" src="~/resources/loader-iframe.gif">
+        </div>        
+    </div>
+   
+    
+    <div id="logcontainer">
+        <!--logs partial view-->
+        <div style="margin: 80px 180px;">
+            <img class="animated-gif" src="~/resources/loader-iframe.gif">
+        </div>
+    </div>
+    
+
+</div>
+
+
+<script type="text/javascript">
+
+    const ddlPipeline = document.getElementById("ddlPipeline");
+    const submitBtn = document.getElementById("submitBtn");
+    const refreshBtn = document.getElementById("refreshBtn");
+
+    window.onload = function () {
+        ShowSubmitButton();
+        HideLoader();
+        AdfLogs();
+    }
+
+    submitBtn.addEventListener("click", () => {
+        HideSubmitButton();
+        RunPipeline();
+    });
+
+    refreshBtn.addEventListener("click", () => {
+        ShowRefreshLoader();
+        AdfLogs();        
+    });
+
+
+    function RunPipeline() {
+        const pipeline = ddlPipeline.value.trim();
+        $.ajax({
+            url: '@Url.Action("RunPipeline","Adf")',
+            data: $.param({ pipelineName: pipeline }, true),
+            contentType: 'application/html; charset=utf-8',
+            success: (function (data, status, xhr) {
+                ShowRunID(data);            
+            }),
+            error: (function (xhr, status) { }),
+            complete: function () {
+                ShowSubmitButton();
+            }
+        });
+    }
+
+    function AdfLogs() {
+        $.ajax({
+            url: '@Url.Action("RefreshLogs","Adf")',
+            contentType: 'application/html; charset=utf-8',
+            success: (function (data, status, xhr) {
+                $("#logcontainer").html(data);
+            }),
+            error: (function (xhr, status) { }),
+            complete: function () {
+                HideRefreshLoader();
+            }
+        });
+    }
+
+    function HideSubmitButton()
+    {
+        document.getElementById("submitBtnContainer").style.display = "none";
+        document.getElementById("submitBtnloaderGif").style.display = "inline";
+    }
+
+    function ShowSubmitButton()
+    {
+        document.getElementById("submitBtnContainer").style.display = "inline-block";
+        document.getElementById("submitBtnloaderGif").style.display = "none";
+    }
+
+    function ShowRefreshLoader()
+    {
+        document.getElementById("loaderGif").style.display = "inline";
+        document.getElementById("refreshBtn").style.display = "none";
+    }
+
+    function HideRefreshLoader()
+    {
+        document.getElementById("refreshBtn").style.display = "inline";
+        document.getElementById("loaderGif").style.display = "none";
+    }
+
+    function HideLoader() {
+        document.getElementById("refreshBtn").style.display = "none";
+        document.getElementById("loaderGif").style.display = "none";
+        document.getElementById("runID").style.display = "none";
+    }
+
+    function ShowRunID(runID)
+    {
+        document.getElementById("runID").style.display = "inline";
+        document.getElementById("runID").innerHTML = "Pipeline running with run id " + runID;        
+        setTimeout(function (){
+            $("#runID").fadeOut();
+        }, 10000);
+    }
+
+
+</script>
+
+<style>
+    img.animated-gif {
+        width: 80px;
+        height: auto;
+    }
+
+     img.animated-gif2 {
+        width: 40px;
+        height: auto;
+    }
+
+</style>

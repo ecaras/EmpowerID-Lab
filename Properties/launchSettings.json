@@ -1,0 +1,36 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false,
+    "anonymousAuthentication": true,
+    "iisExpress": {
+      "applicationUrl": "http://localhost:9719",
+      "sslPort": 44306
+    }
+  },
+  "profiles": {
+    "Empower.Products.ETL": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "https://localhost:7106;http://localhost:5092",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development",
+        "AZURE_TENANT_ID": "<YOUR AZURE TENANT ID>",
+        "AZURE_SUBSCRIPTION_ID": "<YOUR AZURE SUBSCRIPTION ID>",
+        "AZURE_CLIENT_ID": "<YOUR APP REGISTRATION CLIENT ID>",
+        "AZURE_CLIENT_SECRET": "<YOUR APP REGISTRATION SECRET>",
+        "RESOURCE_GROUP_NAME": "<THE RESOURCE GROUP NAME>",
+        "DATA_FACTORY_NAME": "<THE DATA FACTORY NAME>",
+        "GPT_KEY": "<YOUR GPT API KEY>",
+        "GPT_ASSISTANT_ID": "<YOUR CUSTOM MODEL ASSISTANT ID>"
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress",
+      "launchBrowser": true,
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}

@@ -1,0 +1,35 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+<div>
+
+    <h5>Change data capture implementation</h5>
+    <br />
+    <p>
+        Change data capture (CDC) is the process of identifying and capturing changes in a database.
+    </p>
+    <br />
+    
+    <p>Implementing change capture at application level is fine however, there will be some instance where the changes to data will happen outside the application.</p>
+    <p>Implementing cdc at application level is good as we can easily capture changes that we want and throw those to the capturing database / even at separate database.</p>
+    <p>However, data can also change thru several means, like using SSMS, terminals, other applications, etc.</p>
+
+    <br />
+    <p>For Demo purpose I have implemented two Change data capture, be carefull as CDC will have performance impact when not properly use.</p>
+
+    <ul>
+        <li>Internal CDC - where changes are capture within the same database</li>
+        <li>Data Factory - where we capture changes in a particular database and then write the changes to separate database</li>
+        <li>Third party applications - provides great way of implementing CDC as well. (Unfortunately, I was not able implement it here)</li>
+    </ul>
+    <br /> 
+    <p>Change data capture internal database.</p>    
+    <img src="~/resources/cdc-az-sql.png" />
+
+    <br /> <br />
+    <p>Change data capture implemented through Data Factory (preview).</p>    
+    <img src="~/resources/cdc-adf.png" />
+
+</div>

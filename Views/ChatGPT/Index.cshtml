@@ -1,0 +1,168 @@
+﻿@model Empower.Products.ETL.ModelView.GptModelView
+
+@{
+    var l = Model.GptKey;
+
+}
+<div class="container">
+    <br />
+    <h5>GPT Assistant - Talk to your data</h5>
+    <br />
+    <div class="input-container">
+        <div class="user-input-container">
+            <div>
+                <input class="user-input" type="text" placeholder="Ask a question" id="user-input" onkeypress="handleKeyPress(event)" />
+            </div>                       
+        </div>
+        <div class="btnContainer">
+            <button type="button" class="btn btn-primary" id="btn-submit-prompt" >Submit</button>          
+            <div id="loaderGif" style="margin: 0px; display: inline-block">
+                <img class="animated-gif" src="~/resources/loader-iframe.gif">
+            </div>            
+        </div>
+    </div>
+    <div class="chat-container" id="chat-container">
+        <!-- ChatGPT conversation display -->
+    </div>
+   
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+<script>
+    // Get elements
+    const userInput = document.getElementById("user-input");
+    const submitButton = document.getElementById("btn-submit-prompt");
+    const chatContainer = document.getElementById("chat-container");    
+    const apiKey = '<GPT_KEY>';     //Model GptKey -- keep this key confidential
+    // Create conversation history
+    let conversation = [];
+
+    ShowSubmit();
+
+    // Event listener for submit button
+    submitButton.addEventListener("click", () => {        
+        Prompt();
+    });
+
+    function handleKeyPress(e){
+        if(e.keyCode === 13){
+            e.preventDefault(); // Ensure it is only this code that runs
+            Prompt();
+        }
+    }
+
+    // Render conversation in the chat container
+    function renderChat() {
+        chatContainer.innerHTML = "";
+        conversation.forEach((message) => {
+            const messageElement = document.createElement("div");
+            messageElement.classList.add("message", message.role);
+            messageElement.innerText = message.content;
+            chatContainer.appendChild(messageElement);
+        });
+    }
+
+    function Prompt() {
+        HideSubmit();
+        const userMessage = userInput.value.trim();
+        if (userMessage !== "") {
+            SendPrompt(userMessage);
+            // Display user message in the chat container
+            conversation.push({ role: "user", content: userMessage });
+            renderChat();
+            userInput.value = "";
+        }
+    }
+
+    function SendPrompt(userMessage) {
+        $.ajax({
+            url: '@Url.Action("SendPrompt","ChatGPT")',
+            data: $.param({ prompt: userMessage, threadID: '@ViewBag.ThreadID' }, true),
+            contentType: 'application/html; charset=utf-8',
+            success: (function (data, status, xhr) {
+                data.forEach((msg, i) => conversation.push({ role: "assistant", content: msg }));
+                renderChat();
+            }),
+            error: (function (xhr, status) { }),
+            complete: function () { 
+                ShowSubmit();
+            }
+        });       
+    }
+
+    function HideSubmit()
+    {
+        document.getElementById("btn-submit-prompt").style.display = "none"; 
+        document.getElementById("loaderGif").style.display = "inline-block";
+    }
+
+    function ShowSubmit()
+    {
+        document.getElementById("btn-submit-prompt").style.display = "inline-block"; 
+        document.getElementById("loaderGif").style.display = "none";
+    }
+</script>
+
+
+<style>
+
+    button {  
+    }
+
+    .user-input-container {
+        display: inline-block;
+        width: 60%;
+    }
+    .user-input {        
+        padding: 10px;
+        width: 100%;
+        border: 1px solid lightgray;
+        border-radius: 3px;        
+    }
+
+    .user-input:focus{
+        outline: 1px solid gray;
+    }
+
+    .btnContainer {
+        display: inline-block;
+        width: 30%;
+    }
+
+    .btn {
+        height: 50px;
+        width: 170px;
+    }
+
+    img.animated-gif {
+        width: 50px;
+        height: auto;
+    }
+
+    .chat-container {
+        font-size: 13px;
+        margin-top: 20px;
+        width: 60%;
+        background-color: white;
+        border-radius: 10px;
+        padding: 10px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .message {
+        margin-bottom: 10px;
+        padding: 8px;
+        border-radius: 6px;
+    }
+
+    .user {
+        background-color: #f1f1f1;
+        text-align: right;
+    }
+
+    .assistant {
+        background-color: #e1e1e1;
+    }
+</style>

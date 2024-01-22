@@ -1,0 +1,73 @@
+﻿@model Empower.Products.ETL.ModelView.AdfModelView
+@using System.Text.Json;
+
+@{
+    var temp = Model.ProductName;
+}
+<div>
+    <table class="table" style="font-size: 13px;">
+        <thead>
+            <tr>
+                <th scope="col">Pipeline Name</th>
+                <th scope="col">Status</th>
+                <th scope="col">Date Started</th>
+                <th scope="col">Date End</th>
+                <th scope="col">Duration in (ms)</th>
+                <th scope="col">Details</th>
+                <th scope="col" style="display: none"></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var r in Model.DataFactoryPipelineRunInfos)
+            {
+                <tr>
+                    <td>@r.PipelineName</td>
+                    <td>@r.Status</td>
+                    <td>@String.Format("{0:yyyy/MM/dd hh:mm tt}", r.RunStartOn)</td>
+                    <td>@String.Format("{0:yyyy/MM/dd hh:mm tt}", r.RunEndOn)</td>
+                    <td>@r.DurationInMs</td>
+                    <td><i class="fa fa-align-justify showModal" style="font-size:18px"></i></td>
+                    <td style="display: none">
+                        <span>
+                           @JsonSerializer.Serialize(r) 
+                        </span>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <!-- Modal -->
+    <div class="modal fade" id="modalLog" tabindex="-1" role="dialog" aria-labelledby="modalLogCenterTitle" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document" style="max-width:600px">
+            <div class="modal-content" style="width: 600px; height: 400px;  font-size: 13px;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalLongTitle">Log details</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" style="border: none; background-color: white;">                        
+                        <i id="refreshBtn" class="fa fa-close" style="font-size:30px; color: #307fc1 " aria-hidden="true"></i>
+                    </button>
+                </div>
+                <div class="modal-body" style="overflow: scroll; font-size: 14px;">
+                    <span id="modalContent"></span>
+                </div>               
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    $(".showModal").click(function () {   
+        var rowIndex = $(this).closest('tr').index();
+        var tr = $(this).closest('tr')
+        var notes = $(tr).find('td')[6].innerHTML;
+        var popupElement = document.getElementById("modalContent");
+        popupElement.innerHTML = notes;
+        $('#modalLog').modal('show');
+    });
+    $(".close").click(function () {
+        $('#modalLog').modal('hide')
+    });
+    
+    
+</script>                        

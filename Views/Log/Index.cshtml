@@ -1,0 +1,55 @@
+﻿
+
+<div>
+
+    <h5>
+        Application Event Logs / Performance Monitoring 
+    </h5>
+    <br />
+    <p>For demonstration purpose all the following logging options have been enabled for this web app.</p>
+    <p>All the below logging options were placed in the azure web and and insights, blob storage and file system.</p>
+    <ul>
+        <li>File System Logging</li>
+        <li>Blob Storage Logging</li>
+        <li>Application Insight Logging</li>
+        <li>Streaming log</li>
+    </ul>
+
+
+    <p>Logging will have a in application performance, hence carefully select your logging options.</p>
+
+
+    <p>
+        Enabling streaming logs is great way to for real-time log checking.
+    </p>
+
+    <p>However there's no Rest API yet implementation for it yet.</p>
+    
+
+    <a id="btnSendError" href="#">Send Sample Error</a>
+    <br /> <br />
+    <img src="~/resources/log-stream.png" />
+
+</div>
+
+
+<script>
+
+    const btnErr = document.getElementById("btnSendError");
+
+    btnErr.addEventListener("click", () => {
+        ThrowApplicationLog();
+    });
+
+    function ThrowApplicationLog(userMessage) {
+        $.ajax({
+            url: '@Url.Action("ThrowApplicationLog","Log")',
+            contentType: 'application/html; charset=utf-8',
+            success: (function (data, status, xhr) {
+            }),
+            error: (function (xhr, status) { }),
+            complete: function () { 
+            }
+        });       
+    }
+</script>

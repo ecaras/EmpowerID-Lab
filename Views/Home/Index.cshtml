@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+<div class="text-center">
+    <br />
+    <br />
+
+    <h2 class="display-4">Welcome !</h2>
+    <span style="display:none">version 1.0.0.9</span>
+    <div>
+        <br />
+        <br />
+        <p>
+            @Html.ActionLink("ETL Data Factory", "Index", "Adf")
+        </p>
+        
+        <p>
+            @Html.ActionLink("Enhanced Search (Chat GPT)", "Index", "ChatGPT")
+        </p>
+       
+        <p>
+            @Html.ActionLink("Application Logs / Event Monitoring", "Index", "Log")
+        </p>
+
+        <p>
+            @Html.ActionLink("SQL Performance Tuning / Monitoring", "PerformanceTuning", "SQL")
+        </p>
+        <p>
+            @Html.ActionLink("Change Data Capture", "ChangeDataCapture", "SQL")
+        </p>
+
+
+    </div>
+
+    
+</div>
+
+
+<style>
+    img.animated-gif {
+        width: 80px;
+        height: auto;
+    }
+
+    a {
+        font-size: 18px;
+        padding-bottom: 30px;
+        text-decoration: none;
+    }
+</style>
